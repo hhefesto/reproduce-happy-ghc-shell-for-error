@@ -1,6 +1,6 @@
 # Document Title
 
-Easiest way to reproduce would be to just call `nix develop github:hhefesto/reproduce-happy-ghc-shell-for-error`
+Easiest way to reproduce would be to just call `nix develop github:hhefesto/reproduce-happy-ghc-shell-for-error` or do the following:
 
 ```sh
 $ nix shell github:nixos/nixpkgs#stack github:input-output-hk/haskell.nix#hix
