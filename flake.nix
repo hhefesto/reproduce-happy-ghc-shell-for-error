@@ -25,6 +25,15 @@
         packages = flake.packages // {
           default = flake.packages."hello-world:exe:hello-world";
         };
+        devShell = pkgs.system.hello-world.shellFor({
+          inherit system;
+          withHoogle = false;
+          # exactDeps = true; # TODO: Uncomment and have it work.
+          tools = {
+            haskell-language-server = {};
+          };
+          additional = hsPkgs: with hsPkgs; [ Cabal ghc ghc-lib-parser ];
+        });
         legacyPackages = pkgs;
       });
 
