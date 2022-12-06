@@ -7,6 +7,7 @@
     let
       supportedSystems = [
         "x86_64-linux"
+        "x86_64-darwin"
       ];
     in
       flake-utils.lib.eachSystem supportedSystems (system:
