@@ -14,8 +14,15 @@
         overlays = [ haskellNix.overlay
           (final: prev: {
             hello-world =
-              final.haskell-nix.project {
+              final.haskell-nix.stackProject' {
                 src = ./.;
+                modules = [
+                  {
+                    reinstallableLibGhc    = false;
+                  }
+                ];
+
+
               };
           })
         ];
@@ -33,6 +40,55 @@
             haskell-language-server = {};
           };
           additional = hsPkgs: with hsPkgs; [ Cabal ghc ghc-lib-parser ];
+          # buildInputs =
+          #   let # Wrap Stack to work with our Nix integration. We don't want to modify
+          #       # stack.yaml so non-Nix users don't notice anything.
+          #       # - no-nix: We don't want Stack's way of integrating Nix.
+          #       # --system-ghc    # Use the existing GHC on PATH (will come from this Nix file)
+          #       # --no-install-ghc  # Don't try to install GHC if no matching GHC found on PATH
+          #       stack-wrapped = with pkgs; symlinkJoin {
+          #         name = "stack"; # will be available as the usual `stack` in terminal
+          #         paths = [ stack ];
+          #         buildInputs = [ makeWrapper ];
+          #         postBuild = ''
+          #           wrapProgram $out/bin/stack \
+          #             --add-flags "\
+          #               --no-nix \
+          #               --system-ghc \
+          #               --no-install-ghc \
+          #             "
+          #         ''; #TODO: parameterize ghc version
+          #       };
+          #   in (with pkgs; [
+          #     postgresqlWithPackages
+          #     stack-wrapped
+          #     stack2cabal
+          #     cabal-install
+          #     yq-go
+          #     python3Full
+          #     ghcid
+          #     hasktags
+          #     haskellPackages.haskdogs
+          #     haskellPackages.cabal-fmt
+          #     pcre
+          #     yarn
+          #     minio
+          #     nodejs18
+          #     minio-client
+          #     git
+          #     cacert
+          #     bzip2
+          #     zlib
+          #     less
+          #     which
+          #     ormolu
+          #     hlint
+          #     ] ++ (if pkgs.stdenv.isDarwin then [
+          #       darwin.apple_sdk.frameworks.Cocoa
+          #       darwin.apple_sdk.frameworks.CoreFoundation
+          #       darwin.apple_sdk.frameworks.CoreServices
+          #     ] else []));
+
         });
         legacyPackages = pkgs;
       });
